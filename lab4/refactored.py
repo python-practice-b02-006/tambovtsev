@@ -80,7 +80,7 @@ def draw_clouds(x, y, scale):
 
 def draw_sun(x, y, radius):
     """
-        Нарисовать солнцк
+        Нарисовать солнце
         x, y {int} - координаты центра.
         radius {int} - радиус
     """
