@@ -45,19 +45,17 @@ class Ball(pygame.sprite.Sprite):
             points += 1
             self.kill()
             add_ball()
-        if pygame.sprite.spritecollideany(self, horizontal_borders):
-            self.vy = -self.vy
-        if pygame.sprite.spritecollideany(self, vertical_borders):
-            self.vx = -self.vx
+
+        handle_wall_collision(self)
 
 
-class Square(pygame.sprite.Sprite):
+class Square(Ball, pygame.sprite.Sprite):
     """
         второй тип мишени (квадрат)
         за нажатие на нее дается 2 балла
     """
     def __init__(self, width, x, y):
-        super().__init__(all_sprites)
+        super().__init__(0, 0, 0)
         self.image = pygame.Surface((width, width))
         self.image.fill(random.choice(COLORS))
         self.rect = pygame.Rect(x, y, width, width)
@@ -73,10 +71,8 @@ class Square(pygame.sprite.Sprite):
             points += 2
             self.kill()
             add_square()
-        if pygame.sprite.spritecollideany(self, horizontal_borders):
-            self.vy = -self.vy
-        if pygame.sprite.spritecollideany(self, vertical_borders):
-            self.vx = -self.vx
+
+        handle_wall_collision(self)
 
 
 class Border(pygame.sprite.Sprite):
@@ -94,13 +90,29 @@ class Border(pygame.sprite.Sprite):
             self.add(horizontal_borders)
             self.image = pygame.Surface([x2 - x1, 1])
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
+        self.image.fill(pygame.Color("green"))
+
+
+def handle_wall_collision(sprite):
+        if pygame.sprite.spritecollideany(sprite, horizontal_borders):
+            sprite.vy = -sprite.vy
+            if sprite.rect.y > WINDOW_WIDTH / 2:
+                sprite.rect.bottom = WINDOW_HEIGHT - 6
+            else:
+                sprite.rect.top = 6
+        if pygame.sprite.spritecollideany(sprite, vertical_borders):
+            sprite.vx = -sprite.vx
+            if sprite.rect.x > WINDOW_WIDTH / 2:
+                sprite.rect.right = WINDOW_WIDTH - 6
+            else:
+                sprite.rect.left = 6
 
 
 def add_ball():
     maxR = 70
     minR = 30
-    x = random.randint(0, WINDOW_WIDTH - 2 * maxR)
-    y = random.randint(0, WINDOW_HEIGHT - 2 * maxR)
+    x = random.randint(6, WINDOW_WIDTH - 2 * maxR - 6)
+    y = random.randint(6, WINDOW_HEIGHT - 2 * maxR - 6)
     r = random.randint(minR, maxR)
     Ball(r, x, y)
 
@@ -108,10 +120,11 @@ def add_ball():
 def add_square():
     maxWidth = 120
     minWidth = 40
-    x = random.randint(0, WINDOW_WIDTH - maxWidth)
-    y = random.randint(0, WINDOW_HEIGHT - maxWidth)
+    x = random.randint(6, WINDOW_WIDTH - maxWidth - 6)
+    y = random.randint(6, WINDOW_HEIGHT - maxWidth - 6)
     width = random.randint(minWidth, maxWidth)
     Square(width, x, y)
+
 
 def draw_scores():
     with open("record.txt", "r", encoding="utf8") as f:
