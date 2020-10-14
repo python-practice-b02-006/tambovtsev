@@ -94,18 +94,18 @@ class Border(pygame.sprite.Sprite):
 
 
 def handle_wall_collision(sprite):
-        if pygame.sprite.spritecollideany(sprite, horizontal_borders):
-            sprite.vy = -sprite.vy
-            if sprite.rect.y > WINDOW_WIDTH / 2:
-                sprite.rect.bottom = WINDOW_HEIGHT - 6
-            else:
-                sprite.rect.top = 6
-        if pygame.sprite.spritecollideany(sprite, vertical_borders):
-            sprite.vx = -sprite.vx
-            if sprite.rect.x > WINDOW_WIDTH / 2:
-                sprite.rect.right = WINDOW_WIDTH - 6
-            else:
-                sprite.rect.left = 6
+    if pygame.sprite.spritecollideany(sprite, horizontal_borders):
+        sprite.vy = -sprite.vy
+        if sprite.rect.y > WINDOW_WIDTH / 2:
+            sprite.rect.bottom = WINDOW_HEIGHT - 6
+        else:
+            sprite.rect.top = 6
+    if pygame.sprite.spritecollideany(sprite, vertical_borders):
+        sprite.vx = -sprite.vx
+        if sprite.rect.x > WINDOW_WIDTH / 2:
+            sprite.rect.right = WINDOW_WIDTH - 6
+        else:
+            sprite.rect.left = 6
 
 
 def add_ball():
