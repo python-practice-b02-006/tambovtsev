@@ -88,22 +88,33 @@ class Gun(pygame.sprite.Sprite):
 
 
 class ScoreTable(pygame.sprite.Sprite):
-    def __init__(self, width=100, height=100):
+    def __init__(self, width=300, height=200):
         super().__init__(all_sprites)
         self.targets_destr = 0
         self.balls_used = 0
+        self.font = pygame.font.Font(None, 50)
 
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
 
     def add_targets(self):
-        pass
+        self.targets_destr += 1
 
     def add_balls(self):
-        pass
+        self.balls_used += 1
+
+    def score(self):
+        return self.targets_destr - self.balls_used
 
     def update(self):
-        pass
+        self.image.fill(BG_COLOR)
+
+        text = []
+        text.append(self.font.render(f"Destroyed: {self.targets_destr}", True, pygame.Color("WHITE")))
+        text.append(self.font.render(f"Balls used: {self.balls_used}", True, pygame.Color("WHITE")))
+        text.append(self.font.render(f"Total: {self.score()}", True, pygame.Color("RED")))
+        for i in range(len(text)):
+            self.image.blit(text[i], (5, 10 + 40 * i))
 
 def add_target():
     maxR = 70
@@ -151,6 +162,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP:
             gun.toggle_active()
             gun.shoot()
+            table.add_balls()
 
 
     screen.fill(BG_COLOR)
