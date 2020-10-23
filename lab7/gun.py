@@ -4,7 +4,8 @@ import numpy as np
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 FPS = 60
 BG_COLOR = pygame.Color('black')
-GRAV = 0.15
+GRAV = 0.4
+
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self, group, pos, v, radius, color=pygame.Color("red")):
@@ -40,7 +41,7 @@ class Target(pygame.sprite.Sprite):
 
 
 class Gun(pygame.sprite.Sprite):
-    def __init__(self, width, height, v_max, v_min, delta_v=0.2):
+    def __init__(self, width=50, height=20, v_min=7, v_max=20, delta_v=0.3):
         super().__init__(all_sprites)
         self.v_max = v_max
         self.v_min = v_min
@@ -61,23 +62,27 @@ class Gun(pygame.sprite.Sprite):
 
     def set_angle(self, x, y):
         self.angle = np.arctan2(y - self.rect.y, x - self.rect.x)
-        self.image = pygame.transform.rotate(self.original_image, -np.degrees(self.angle))
-        pos = self.rect.center
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def toggle_active(self):
         self.active = not self.active
 
-    def shoot(self, v=5):
-        Ball(balls, self.rect.center, [v * np.cos(self.angle),
-                                       v * np.sin(self.angle)],
+    def shoot(self):
+        Ball(balls, self.rect.center, [self.v * np.cos(self.angle),
+                                       self.v * np.sin(self.angle)],
              30)
         self.v = self.v_min
+        self.original_image.fill(pygame.Color("#e549f8"))
 
     def update(self):
+        self.image = pygame.transform.rotate(self.original_image, -np.degrees(self.angle))
+        self.rect = self.image.get_rect(center=self.rect.center)
+
         if self.active and self.v <= self.v_max:
             self.v += self.delta_v
+            pygame.draw.rect(self.original_image, pygame.Color("#588f0a"),
+                             (0, 0,
+                              self.rect.width * (self.v - self.v_min) / (self.v_max - self.v_min),
+                              self.rect.height))
 
 
 class ScoreTable(pygame.sprite.Sprite):
@@ -107,7 +112,7 @@ all_sprites = pygame.sprite.Group()
 targets = pygame.sprite.Group()
 balls = pygame.sprite.Group()
 
-gun = Gun(50, 20, 10, 50)
+gun = Gun()
 # table = ScoreTable()
 # for i in range(2):
 #     Target()
