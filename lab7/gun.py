@@ -1,9 +1,12 @@
 import pygame
 import numpy as np
+import random
 
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 FPS = 60
 BG_COLOR = pygame.Color('black')
+COLORS = [pygame.Color("BLUE"), pygame.Color("YELLOW"), pygame.Color("GREEN"),
+          pygame.Color("MAGENTA"), pygame.Color("CYAN")]
 GRAV = 0.4
 
 
@@ -16,8 +19,7 @@ class Ball(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((2 * radius, 2 * radius), pygame.SRCALPHA)
         pygame.draw.circle(self.image, color, (radius, radius), radius)
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
+        self.rect = self.image.get_rect(center=pos)
 
     def update(self):
         self.v[1] += GRAV
@@ -32,16 +34,16 @@ class Target(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((2 * radius, 2 * radius), pygame.SRCALPHA)
         pygame.draw.circle(self.image, color, (radius, radius), radius)
-        self.rect = pygame.Rect(pos, (2 * radius, 2 * radius))
+        self.rect = self.image.get_rect(center=pos)
 
     def update(self):
-        if pygame.sprite.spritecollideany(ball):
+        if pygame.sprite.spritecollideany(self, balls):
             self.kill()
             table.add_targets()
 
 
 class Gun(pygame.sprite.Sprite):
-    def __init__(self, width=50, height=20, v_min=7, v_max=20, delta_v=0.3):
+    def __init__(self, width=50, height=20, v_min=7, v_max=30, delta_v=0.7):
         super().__init__(all_sprites)
         self.v_max = v_max
         self.v_min = v_min
@@ -69,7 +71,7 @@ class Gun(pygame.sprite.Sprite):
     def shoot(self):
         Ball(balls, self.rect.center, [self.v * np.cos(self.angle),
                                        self.v * np.sin(self.angle)],
-             30)
+             20)
         self.v = self.v_min
         self.original_image.fill(pygame.Color("#e549f8"))
 
@@ -86,21 +88,30 @@ class Gun(pygame.sprite.Sprite):
 
 
 class ScoreTable(pygame.sprite.Sprite):
-    def __init__(self, width, height):
+    def __init__(self, width=100, height=100):
         super().__init__(all_sprites)
         self.targets_destr = 0
         self.balls_used = 0
 
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.rect = self.image.get_rect()
 
-    def add_targets():
+    def add_targets(self):
         pass
 
     def add_balls(self):
         pass
 
-    def update():
+    def update(self):
         pass
+
+def add_target():
+    maxR = 70
+    minR = 30
+    r = random.randint(minR, maxR)
+    x = random.randint(r, WINDOW_WIDTH - r)
+    y = random.randint(r, WINDOW_HEIGHT - r)
+    Target(targets, (x, y), r, color=random.choice(COLORS))
 
 
 pygame.init()
@@ -113,9 +124,9 @@ targets = pygame.sprite.Group()
 balls = pygame.sprite.Group()
 
 gun = Gun()
-# table = ScoreTable()
-# for i in range(2):
-#     Target()
+table = ScoreTable()
+for i in range(4):
+    add_target()
 
 clock = pygame.time.Clock()
 running = True
