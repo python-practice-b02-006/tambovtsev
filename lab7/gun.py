@@ -1,6 +1,8 @@
 import pygame
 import numpy as np
 import random
+from PIL import Image, ImageDraw, ImageOps
+
 
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 FPS = 60
@@ -11,8 +13,8 @@ GRAV = 0.4
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self, group, pos, v, radius, color=pygame.Color("red")):
-        super().__init__(all_sprites, group)
+    def __init__(self, pos, v, radius, color=pygame.Color("yellow")):
+        super().__init__(all_sprites, balls)
         self.v = v
         self.radius = radius
         self.color = color
@@ -26,9 +28,25 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.rect.move(self.v[0], self.v[1])
 
 
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, pos, length, angle, width=10, color=pygame.Color("coral")):
+        super().__init__(all_sprites, walls)
+        self.length = length
+        self.angle = angle
+        self.color = color
+
+        self.image = pygame.Surface((length, width), pygame.SRCALPHA)
+        self.image.fill(color)
+        self.image = pygame.transform.rotate(self.image, angle)
+        self.rect = self.image.get_rect(center=pos)
+
+    def update(self):
+        pass
+
+
 class Target(pygame.sprite.Sprite):
-    def __init__(self, group, pos, radius, color=pygame.Color("green")):
-        super().__init__(all_sprites, group)
+    def __init__(self, pos, radius, color=pygame.Color("green")):
+        super().__init__(all_sprites, targets)
         self.radius = radius
         self.color = color
 
@@ -69,8 +87,8 @@ class Gun(pygame.sprite.Sprite):
         self.active = not self.active
 
     def shoot(self):
-        Ball(balls, self.rect.center, [self.v * np.cos(self.angle),
-                                       self.v * np.sin(self.angle)],
+        Ball(self.rect.center, [self.v * np.cos(self.angle),
+                                self.v * np.sin(self.angle)],
              20)
         self.v = self.v_min
         self.original_image.fill(pygame.Color("#e549f8"))
@@ -90,6 +108,9 @@ class Gun(pygame.sprite.Sprite):
 class ScoreTable(pygame.sprite.Sprite):
     def __init__(self, width=300, height=200):
         super().__init__(all_sprites)
+        self.width = width
+        self.height = height
+
         self.targets_destr = 0
         self.balls_used = 0
         self.font = pygame.font.Font(None, 50)
@@ -107,7 +128,7 @@ class ScoreTable(pygame.sprite.Sprite):
         return self.targets_destr - self.balls_used
 
     def update(self):
-        self.image.fill(BG_COLOR)
+        self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
         text = []
         text.append(self.font.render(f"Destroyed: {self.targets_destr}", True, pygame.Color("WHITE")))
@@ -120,9 +141,9 @@ def add_target():
     maxR = 70
     minR = 30
     r = random.randint(minR, maxR)
-    x = random.randint(r, WINDOW_WIDTH - r)
+    x = random.randint(100, WINDOW_WIDTH - r)
     y = random.randint(r, WINDOW_HEIGHT - r)
-    Target(targets, (x, y), r, color=random.choice(COLORS))
+    Target((x, y), r, color=random.choice(COLORS))
 
 
 pygame.init()
@@ -133,8 +154,13 @@ screen.fill(BG_COLOR)
 all_sprites = pygame.sprite.Group()
 targets = pygame.sprite.Group()
 balls = pygame.sprite.Group()
+walls = pygame.sprite.Group()
 
 gun = Gun()
+Wall((0, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90, width=1, color=BG_COLOR)
+Wall((WINDOW_WIDTH - 1, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90,  width=1, color=BG_COLOR)
+Wall((WINDOW_WIDTH // 2, 0), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
+Wall((WINDOW_WIDTH // 2, WINDOW_HEIGHT - 1), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
 table = ScoreTable()
 for i in range(4):
     add_target()
