@@ -9,7 +9,10 @@ FPS = 60
 BG_COLOR = pygame.Color('black')
 COLORS = [pygame.Color("BLUE"), pygame.Color("YELLOW"), pygame.Color("GREEN"),
           pygame.Color("MAGENTA"), pygame.Color("CYAN")]
+
 GRAV = 0.4
+K_PERP = 0.85
+K_PARAL = 0.9
 
 
 class Ball(pygame.sprite.Sprite):
@@ -29,17 +32,25 @@ class Ball(pygame.sprite.Sprite):
 
         # reflection
         if self.rect.right >= WINDOW_WIDTH:
-            self.v[0] *= -1
+            self.v[0] *= -1 * K_PERP
+            self.v[1] *= K_PARAL
             self.rect.right = WINDOW_WIDTH
         if self.rect.left <= 0:
-            self.v[0] *= -1
+            self.v[0] *= -1 * K_PERP
+            self.v[1] *= K_PARAL
             self.rect.left = 0
         if self.rect.bottom >= WINDOW_HEIGHT:
-            self.v[1] *= -1
+            self.v[1] *= -1 * K_PERP
+            self.v[0] *= K_PARAL
             self.rect.bottom = WINDOW_HEIGHT
         if self.rect.top <= 0:
-            self.v[1] *= -1
+            self.v[1] *= -1 * K_PERP
+            self.v[0] *= K_PARAL
             self.rect.top = 0
+
+        # stop
+        if self.v[0] ** 2 + self.v[1] ** 2 <= 0.5 ** 2:
+            self.kill()
 
 
 class Target(pygame.sprite.Sprite):
