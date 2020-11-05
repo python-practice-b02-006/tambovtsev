@@ -29,7 +29,7 @@ class Ball(pygame.sprite.Sprite):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, length, angle, width=10, color=pygame.Color("coral")):
+    def __init__(self, pos, length, angle, width=10, color=pygame.Color("#0c00ff")):
         super().__init__(all_sprites, walls)
         self.length = length
         self.angle = angle
@@ -74,8 +74,7 @@ class Gun(pygame.sprite.Sprite):
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.image.fill(pygame.Color("#e549f8"))
         self.original_image = self.image.copy()
-        self.rect = self.image.get_rect()
-        self.rect.center = (width // 2, WINDOW_HEIGHT // 2)
+        self.rect = self.image.get_rect(center=(width // 2 + 10, WINDOW_HEIGHT // 2))
 
     def move(self, step):
         self.rect = self.rect.move(0, step)
@@ -101,8 +100,8 @@ class Gun(pygame.sprite.Sprite):
             self.v += self.delta_v
             pygame.draw.rect(self.original_image, pygame.Color("#588f0a"),
                              (0, 0,
-                              self.rect.width * (self.v - self.v_min) / (self.v_max - self.v_min),
-                              self.rect.height))
+                              self.original_image.get_rect().width * (self.v - self.v_min) / (self.v_max - self.v_min),
+                              self.original_image.get_rect().height))
 
 
 class ScoreTable(pygame.sprite.Sprite):
@@ -137,6 +136,7 @@ class ScoreTable(pygame.sprite.Sprite):
         for i in range(len(text)):
             self.image.blit(text[i], (5, 10 + 40 * i))
 
+
 def add_target():
     maxR = 70
     minR = 30
@@ -157,11 +157,17 @@ balls = pygame.sprite.Group()
 walls = pygame.sprite.Group()
 
 gun = Gun()
+
+# Borders
 Wall((0, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90, width=1, color=BG_COLOR)
 Wall((WINDOW_WIDTH - 1, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90,  width=1, color=BG_COLOR)
 Wall((WINDOW_WIDTH // 2, 0), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
 Wall((WINDOW_WIDTH // 2, WINDOW_HEIGHT - 1), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
+
+Wall((500, 100), 200, 40, width=2)
+
 table = ScoreTable()
+
 for i in range(4):
     add_target()
 
