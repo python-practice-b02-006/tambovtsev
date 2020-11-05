@@ -27,21 +27,19 @@ class Ball(pygame.sprite.Sprite):
         self.v[1] += GRAV
         self.rect = self.rect.move(self.v[0], self.v[1])
 
-
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, length, angle, width=10, color=pygame.Color("#0c00ff")):
-        super().__init__(all_sprites, walls)
-        self.length = length
-        self.angle = angle
-        self.color = color
-
-        self.image = pygame.Surface((length, width), pygame.SRCALPHA)
-        self.image.fill(color)
-        self.image = pygame.transform.rotate(self.image, angle)
-        self.rect = self.image.get_rect(center=pos)
-
-    def update(self):
-        pass
+        # reflection
+        if self.rect.right >= WINDOW_WIDTH:
+            self.v[0] *= -1
+            self.rect.right = WINDOW_WIDTH
+        if self.rect.left <= 0:
+            self.v[0] *= -1
+            self.rect.left = 0
+        if self.rect.bottom >= WINDOW_HEIGHT:
+            self.v[1] *= -1
+            self.rect.bottom = WINDOW_HEIGHT
+        if self.rect.top <= 0:
+            self.v[1] *= -1
+            self.rect.top = 0
 
 
 class Target(pygame.sprite.Sprite):
@@ -157,14 +155,6 @@ balls = pygame.sprite.Group()
 walls = pygame.sprite.Group()
 
 gun = Gun()
-
-# Borders
-Wall((0, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90, width=1, color=BG_COLOR)
-Wall((WINDOW_WIDTH - 1, WINDOW_HEIGHT // 2), WINDOW_HEIGHT, 90,  width=1, color=BG_COLOR)
-Wall((WINDOW_WIDTH // 2, 0), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
-Wall((WINDOW_WIDTH // 2, WINDOW_HEIGHT - 1), WINDOW_WIDTH, 0, width=1, color=BG_COLOR)
-
-Wall((500, 100), 200, 40, width=2)
 
 table = ScoreTable()
 
