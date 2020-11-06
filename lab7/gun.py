@@ -119,7 +119,9 @@ class Gun(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(width // 2 + 10, WINDOW_HEIGHT // 2))
 
     def move(self, step):
-        self.rect = self.rect.move(0, step)
+        if (step > 0 and self.rect.centery <= WINDOW_HEIGHT - 60) or \
+           (step < 0 and self.rect.centery >= 200):
+            self.rect = self.rect.move(0, step)
 
     def set_angle(self, x, y):
         self.angle = np.arctan2(y - self.rect.y, x - self.rect.x)
