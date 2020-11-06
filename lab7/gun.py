@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageOps
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 FPS = 60
 BG_COLOR = pygame.Color('black')
-COLORS = [pygame.Color("BLUE"), pygame.Color("YELLOW"), pygame.Color("GREEN"),
+COLORS = [pygame.Color("BLUE"), pygame.Color("GREEN"),
           pygame.Color("MAGENTA"), pygame.Color("CYAN")]
 
 GRAV = 0.4
