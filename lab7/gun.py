@@ -1,6 +1,6 @@
 import pygame
-import numpy as np
 import random
+import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
 
@@ -52,6 +52,37 @@ class Ball(pygame.sprite.Sprite):
         if self.v[0] ** 2 + self.v[1] ** 2 <= 0.5 ** 2:
             self.kill()
 
+        # collision
+        col = pygame.sprite.spritecollideany(self, obstacles)
+        if col:
+            self.kill()
+            col.switch_color()
+            col.cnt += 1
+            if col.cnt == 3:
+                col.kill()
+                while check_collision(add_obstacle()):
+                    pass
+
+class Obstacle(pygame.sprite.Sprite):
+    colors = [pygame.Color("red"),
+              pygame.Color("#c05a00"),
+              pygame.Color("#ff0054")]
+    def __init__(self, pos, side):
+        super().__init__(all_sprites, obstacles)
+        self.pos = pos
+        self.image = pygame.Surface((side, side), pygame.SRCALPHA)
+        self.color = random.choice(Obstacle.colors)
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect(center=pos)
+
+        self.cnt = 0
+
+    def switch_color(self):
+        colors = Obstacle.colors.copy()
+        colors.remove(self.color)
+        self.color = random.choice(colors)
+        self.image.fill(self.color)
+
 
 class Target(pygame.sprite.Sprite):
     def __init__(self, pos, radius, color=pygame.Color("green")):
@@ -67,6 +98,8 @@ class Target(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, balls):
             self.kill()
             table.add_targets()
+            while check_collision(add_target()):
+                pass
 
 
 class Gun(pygame.sprite.Sprite):
@@ -152,7 +185,22 @@ def add_target():
     r = random.randint(minR, maxR)
     x = random.randint(100, WINDOW_WIDTH - r)
     y = random.randint(r, WINDOW_HEIGHT - r)
-    Target((x, y), r, color=random.choice(COLORS))
+    return Target((x, y), r, color=random.choice(COLORS))
+
+def add_obstacle():
+    max_side = 100
+    min_side = 50
+    side = random.randint(min_side, max_side)
+    x = random.randint(100, WINDOW_WIDTH - side - 100)
+    y = random.randint(side, WINDOW_HEIGHT - side - 100)
+    return Obstacle((x, y), side)
+
+def check_collision(sprite):
+    for suspect in pygame.sprite.spritecollide(sprite, all_sprites, False):
+        if suspect is not sprite and pygame.sprite.collide_mask(sprite, suspect):
+            sprite.kill()
+            return True
+    return False
 
 
 pygame.init()
@@ -163,14 +211,19 @@ screen.fill(BG_COLOR)
 all_sprites = pygame.sprite.Group()
 targets = pygame.sprite.Group()
 balls = pygame.sprite.Group()
-walls = pygame.sprite.Group()
+obstacles = pygame.sprite.Group()
 
 gun = Gun()
 
 table = ScoreTable()
 
-for i in range(4):
-    add_target()
+for _ in range(4):
+    while check_collision(add_target()):
+        pass
+
+for _ in range(3):
+    while check_collision(add_obstacle()):
+        pass
 
 clock = pygame.time.Clock()
 running = True
