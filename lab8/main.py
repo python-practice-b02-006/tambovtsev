@@ -1,7 +1,7 @@
 import pygame
 import body
 import gui
-import io
+import data
 
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 FPS = 60
@@ -11,18 +11,16 @@ pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE)
 screen.fill(BG_COLOR)
 
-
-# INIT STUFF
-all_sprites = pygame.sprite.Group()
+# init groups
+buttons = pygame.sprite.Group()
 bodies = pygame.sprite.Group()
 
-# bodies
-for body in io.read_data():
-    pass
+# init bodies
+data.read_data(bodies)
 
-# gui
-slider = gui.Slider(all_sprites)
-start_stop = gui.StartStop(all_sprites)
+# init gui
+slider = gui.Slider(buttons)
+start_stop = gui.StartStop(buttons)
 
 clock = pygame.time.Clock()
 running = True
@@ -30,13 +28,18 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            io.write_data()
+            data.write_data()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # check if buttons were pressed and update them
+            buttons.update(event)
 
     screen.fill(BG_COLOR)
 
-    # DO STUFF
-    all_sprites.draw(screen)
-    all_sprites.update()
+    if start_stop.on:
+        bodies.update()
+
+    buttons.draw(screen)
+    bodies.draw(screen)
 
     pygame.display.flip()
     clock.tick(FPS)
