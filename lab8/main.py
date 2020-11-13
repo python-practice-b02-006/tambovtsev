@@ -1,5 +1,4 @@
 import pygame
-import body
 import gui
 import data
 
@@ -36,7 +35,7 @@ while running:
     if start_stop.on:
         bodies.update()
 
-    buttons.draw(screen)
+    # buttons.draw(screen)
     bodies.draw(screen)
 
     pygame.display.flip()
