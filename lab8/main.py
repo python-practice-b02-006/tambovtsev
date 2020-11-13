@@ -32,10 +32,16 @@ while running:
 
     screen.fill(BG_COLOR)
 
-    if start_stop.on:
-        bodies.update()
+    # determining how fast is the system drawn based on the position of the slider.
+    dt = slider.slider_y / slider.height
+    if not start_stop.on:
+        # first we calculate force on all bodies
+        for body in bodies:
+            body.calculate_acceleration(bodies)
+        # then we move them
+        bodies.update(WINDOW_SIZE, dt)
 
-    # buttons.draw(screen)
+    buttons.draw(screen)
     bodies.draw(screen)
 
     pygame.display.flip()
