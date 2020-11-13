@@ -35,7 +35,7 @@ while running:
     if start_stop.on:
         bodies.update()
 
-    # buttons.draw(screen)
+    buttons.draw(screen)
     bodies.draw(screen)
 
     pygame.display.flip()

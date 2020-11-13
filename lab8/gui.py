@@ -1,4 +1,5 @@
 import pygame
+import os
 
 
 class Slider(pygame.sprite.Sprite):
@@ -46,9 +47,17 @@ class StartStop(pygame.sprite.Sprite):
     """
     def __init__(self, group):
         super().__init__(group)
+        self.side = 50
         self.on = False
-        self.image = pygame.Surface((0, 0))
-        self.rect = self.image.get_rect()
+
+        self.image = pygame.Surface((self.side, self.side), pygame.SRCALPHA)
+        fullname = os.path.join(os.path.dirname(__file__), 'images', "play_pause.png")
+        image = pygame.image.load(fullname).convert()
+        image = pygame.transform.scale(image, (self.side, self.side))
+        self.image = image.convert_alpha()
+        self.rect = self.image.get_rect(center=(30, 450))
+        pygame.draw.rect(self.image, pygame.Color("white"), (0, 0, self.side, self.side), 1)
 
     def update(self, event):
-        pass
+        if event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos):
+            self.on = not self.on
