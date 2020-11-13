@@ -13,6 +13,9 @@ class Slider(pygame.sprite.Sprite):
 
 
 class StartStop(pygame.sprite.Sprite):
+    """
+    This button will start and stop updating the system.
+    """
     def __init__(self, group):
         super().__init__(group)
         self.on = False

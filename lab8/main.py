@@ -1,5 +1,4 @@
 import pygame
-import body
 import gui
 import data
 
@@ -31,14 +30,14 @@ while running:
             data.write_data()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # check if buttons were pressed and update them
-            buttons.update(event)
+            pass
 
     screen.fill(BG_COLOR)
 
     if start_stop.on:
         bodies.update()
 
-    buttons.draw(screen)
+    # buttons.draw(screen)
     bodies.draw(screen)
 
     pygame.display.flip()
