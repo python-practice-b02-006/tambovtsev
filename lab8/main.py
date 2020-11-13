@@ -26,12 +26,10 @@ clock = pygame.time.Clock()
 running = True
 while running:
     for event in pygame.event.get():
+        buttons.update(event)
         if event.type == pygame.QUIT:
             running = False
             data.write_data()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # check if buttons were pressed and update them
-            buttons.update(event)
 
     screen.fill(BG_COLOR)
 
