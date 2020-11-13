@@ -8,8 +8,8 @@ class Slider(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
         self.width = 20
-        self.height = 300
-        self.slider_y = 150
+        self.height = 400
+        self.slider_y = self.height // 2
         self.step = 20
         self.color = pygame.Color("#828282")
 
