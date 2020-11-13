@@ -32,8 +32,14 @@ while running:
 
     screen.fill(BG_COLOR)
 
+    # determining how fast is the system drawn based on the position of the slider.
+    dt = slider.slider_y / slider.height
     if start_stop.on:
-        bodies.update()
+        # first we calculate force on all bodies
+        for body in bodies:
+            body.calculate_acceleration(bodies)
+        # then we move them
+        bodies.update(WINDOW_SIZE, dt)
 
     buttons.draw(screen)
     bodies.draw(screen)

@@ -25,7 +25,7 @@ def read_data(bodies):
         else:
             color = 0
 
-        data = [float(data[0]), [int(data[1]), int(data[2])], [int(data[3]), int(data[4])], int(data[5])]
+        data = [float(data[0]), [float(data[1]), float(data[2])], [float(data[3]), float(data[4])], int(data[5])]
 
         if color:
             data.append(color)
