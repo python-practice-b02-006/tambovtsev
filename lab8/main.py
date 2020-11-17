@@ -1,4 +1,5 @@
 import pygame
+import body
 import gui
 import data
 
@@ -12,7 +13,7 @@ screen.fill(BG_COLOR)
 
 # init groups
 buttons = pygame.sprite.Group()
-bodies = pygame.sprite.Group()
+bodies = body.System()
 
 # init bodies
 data.read_data(bodies)
@@ -33,13 +34,12 @@ while running:
     screen.fill(BG_COLOR)
 
     # determining how fast is the system drawn based on the position of the slider.
-    dt = slider.slider_y / slider.height
-    if start_stop.on:
-        # first we calculate force on all bodies
-        for body in bodies:
-            body.calculate_acceleration(bodies)
+    dt = 0.1 * slider.slider_y / slider.height
+    if start_stop.on and bodies.size > 0:
+        # first we calculate new positions on all bodies
+        bodies.new_state(dt)
         # then we move them
-        bodies.update(WINDOW_SIZE, dt)
+        bodies.update(WINDOW_SIZE)
 
     buttons.draw(screen)
     bodies.draw(screen)
