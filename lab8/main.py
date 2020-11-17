@@ -34,7 +34,7 @@ while running:
     screen.fill(BG_COLOR)
 
     # determining how fast is the system drawn based on the position of the slider.
-    dt = 0.1 * slider.slider_y / slider.height
+    dt = slider.calc_value()
     if start_stop.on and bodies.size > 0:
         # first we calculate new positions on all bodies
         bodies.new_state(dt)
