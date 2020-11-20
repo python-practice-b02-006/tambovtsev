@@ -41,5 +41,6 @@ def write_data(bodies):
     """
     with open("data.txt", "w", encoding="utf8") as f:
         f.write("\n".join([" ".join(map(str,
-                [b.mass, *b.pos, *b.vel, b.radius, b.color]))
+                [b.mass, *b.pos, *b.vel,
+                 b.radius, "#{:02x}{:02x}{:02x}".format(*b.color)]))
                 for b in bodies]))
