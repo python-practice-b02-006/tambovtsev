@@ -35,8 +35,11 @@ def read_data(bodies):
     inp.close()
 
 
-def write_data():
+def write_data(bodies):
     """
     This function writes information about the system into a file.
     """
-    pass
+    with open("data.txt", "w", encoding="utf8") as f:
+        f.write("\n".join([" ".join(map(str,
+                [b.mass, *b.pos, *b.vel, b.radius, b.color]))
+                for b in bodies]))

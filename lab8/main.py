@@ -29,7 +29,7 @@ while running:
         buttons.update(event)
         if event.type == pygame.QUIT:
             running = False
-            data.write_data()
+            data.write_data(bodies)
 
     screen.fill(BG_COLOR)
 
